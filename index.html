@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Amiya-CDN</title>
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta content="width=device-width,initial-scale=1,user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdn.amiya.cf/gh/BigCoke233/textretty.css@master/textretty.min.css">
+  <link rel="stylesheet" href="https://cdn.amiya.cf/npm/tnxg-blog@2023.1.12-18.0.8/css/main.css">
+  <style>
+    #ART_comments {
+      margin: 0 auto;
+      max-width: 700px;
+      width: 65%;
+    }
+
+    #MainContent {
+      max-width: 700px;
+      padding: 6px;
+      margin: 0 auto;
+    }
+
+    hr {
+      width: 80%;
+      margin: 2.5em auto;
+      border: 0;
+      height: 4px;
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    }
+
+    footer {
+      width: 100%;
+      color: #696767;
+      float: left;
+      text-align: center;
+      bottom: 0;
+      margin-bottom: 30px;
+      background-color: #ffffff;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #66ccff;
+    }
+
+    footer a:hover {
+      color: orange;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="main">
+      <main>
+        <div id="MainContent" class="textretty"></div>
+        <!-- <p style="text-align: center;"><code>Server: <span id="server">[ Loading ]</span></code></p> -->
+      </main>
+    </div>
+  </div>
+  <hr>
+  <div id="ART_comments"></div>
+  <hr>
+  <footer>
+    <p>DESIGN BY <a target="_blank" rel="noopener" href="https://yfun.top/">YFun (@oCoke)</a></p>
+    <p>© 2019-2023 by <a target="_blank" rel="noopener" href="https://tnxg.top/">TiaNXianG(TNXG)</a>. All
+      rights reserved.</p>
+  </footer>
+  <script src="https://cdn.amiya.cf/npm/artalk@2.4.4/dist/Artalk.js"></script>
+  <link rel="stylesheet" href="https://cdn.amiya.cf/npm/artalk@2.4.4/dist/Artalk.css">
+  <script src="https://cdn.amiya.cf/npm/marked@2.0.1/lib/marked.js"></script>
+  <script>
+    const mcl = document.getElementById("MainContent");
+    const loadMarkdown = (url) => {
+      if (!window.fetch) {
+        mcl.innerHTML = '<div style="font-size: 24px"><p>Your browser outdated. Please use the latest version of Chrome or Firefox!</p><p>您的浏览器版本过低，请使用最新版的 Chrome 或 Firefox 浏览器！</p></div>';
+      } else {
+        mcl.innerHTML = '<div style="font-size: 24px">Loading ...</div>';
+        fetch(url, {
+          method: 'GET'
+        }).then((resp) => {
+          return Promise.all([resp.ok, resp.status, resp.text(), resp.headers]);
+        }).then(([ok, status, data, headers]) => {
+          if (ok) {
+            return {
+              ok,
+              status,
+              data,
+              headers
+            }
+          } else {
+            throw new Error(JSON.stringify(json.error));
+          }
+        }).then((resp) => {
+          let data = marked(resp.data);
+          mcl.innerHTML = data;
+        }).catch((error) => {
+          mcl.innerHTML = '<div style="font-size: 24px"><p>There was a problem loading the Markdown File！</p><p>加载 Markdown 文件时出现问题！</p></div>';
+        });
+      }
+    };
+    loadMarkdown("https://cdn.amiya.cf/gh/Amiya-CDN/cdn-fontend@master/README.md");
+    var artalk = new Artalk({
+      el: '#ART_comments',
+      server: 'https://artalk.prts.top',
+      site: '天翔TNXGの空间站',
+      //- Zkeq佬提供的图片上传方式
+      imgUploader: async (file) => {
+        const formData = new FormData()
+        let headers = new Headers();
+        formData.set('file', file)
+        headers.append('Authorization', 'Bearer 1|KFJIr9ahWLj7SYwLDaKCTtd63yoBMSEyZ27FbpAd');
+        headers.append('Accept', 'application/json');
+        return fetch('https://pic.prts.top/api/v1/upload', {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+          })
+          .then((resp) => resp.json())
+          .then((resp) => resp.data.links.url);
+      }
+    })
+  </script>
+</body>
+
+</html>
